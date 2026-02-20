@@ -23,3 +23,5 @@ steps:
 
 images:
   - europe-west1-docker.pkg.dev/$PROJECT_ID/ocr/ocr-checker:$COMMIT_SHA
+options:
+  logging: CLOUD_LOGGING_ONLY
