@@ -1,7 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="14" fill="#050914"/>
-  <path d="M40 16v25c0 10-6 15-16 15-7 0-12-3-14-8l7-4c1.5 3 3.5 4 7 4 5 0 8-2.5 8-8.5V16h8z"
-        fill="#ffffff"/>
-  <path d="M40 16v25c0 10-6 15-16 15-7 0-12-3-14-8"
-        fill="none" stroke="#0b1222" stroke-width="1.5" opacity="0.9"/>
+  <text x="32" y="44"
+        text-anchor="middle"
+        font-family="Manrope, Inter, Segoe UI, Arial, sans-serif"
+        font-size="40"
+        font-weight="900"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="3"
+        stroke-linejoin="round"
+        stroke-linecap="round">
+    J
+  </text>
+  <!-- чуть синего, но не свечением -->
+  <text x="32" y="44"
+        text-anchor="middle"
+        font-family="Manrope, Inter, Segoe UI, Arial, sans-serif"
+        font-size="40"
+        font-weight="900"
+        fill="none"
+        stroke="#4f8cff"
+        stroke-width="1.2"
+        opacity="0.8"
+        stroke-linejoin="round"
+        stroke-linecap="round">
+    J
+  </text>
 </svg>
