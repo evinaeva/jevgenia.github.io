@@ -1,0 +1,25 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "europe-west1-docker.pkg.dev/$PROJECT_ID/ocr/ocr-checker:$COMMIT_SHA", "."]
+
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "europe-west1-docker.pkg.dev/$PROJECT_ID/ocr/ocr-checker:$COMMIT_SHA"]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "ocr-checker",
+        "--image",
+        "europe-west1-docker.pkg.dev/$PROJECT_ID/ocr/ocr-checker:$COMMIT_SHA",
+        "--region",
+        "europe-west1",
+        "--platform",
+        "managed",
+        "--quiet"
+      ]
+
+images:
+  - europe-west1-docker.pkg.dev/$PROJECT_ID/ocr/ocr-checker:$COMMIT_SHA
