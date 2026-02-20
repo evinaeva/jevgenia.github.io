@@ -1,25 +1,190 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Jevgenia R.</title>
-  <style>
-    body {
-      font-family: Arial;
-      max-width: 700px;
-      margin: 60px auto;
-      line-height: 1.6;
-    }
-    a { color: #0366d6; text-decoration: none; }
-  </style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jevgenia Rossi</title>
+
+<!-- favicon -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+<!-- mobile browser color -->
+<meta name="theme-color" content="#0b1222">
+
+<!-- Manrope font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg:#04070c;
+  --card:#0c1424;
+  --text:#e6ecff;
+  --muted:#9aa7c7;
+  --accent:#4f8cff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:
+    radial-gradient(1200px 600px at 70% -10%, #0b1f4a 0%, transparent 60%),
+    radial-gradient(800px 500px at -20% 120%, #091a3a 0%, transparent 60%),
+    var(--bg);
+
+  color:var(--text);
+  font-family: Manrope, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+}
+
+/* card */
+
+.card{
+  width:420px;
+  padding:40px 34px 34px;
+  border-radius:16px;
+
+  background:linear-gradient(180deg,#0e172b 0%, #0b1222 100%);
+
+  box-shadow:
+    0 0 70px rgba(40,90,200,.28),
+    0 0 12px rgba(80,140,255,.35) inset,
+    0 20px 60px rgba(0,0,0,.7);
+
+  position:relative;
+}
+
+.card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  pointer-events:none;
+  box-shadow:0 0 45px rgba(70,120,255,.25);
+}
+
+/* text */
+
+h1{
+  margin:0 0 6px;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin-bottom:28px;
+  font-size:15px;
+}
+
+/* links */
+
+.links{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.btn{
+  display:block;
+  padding:14px 16px;
+  border-radius:10px;
+  text-decoration:none;
+  color:var(--text);
+
+  background:linear-gradient(180deg,#111c34,#0d162b);
+  border:1px solid #1d2a4d;
+
+  transition:.18s ease;
+  position:relative;
+}
+
+.btn:hover{
+  border-color:#3f6fff;
+  background:linear-gradient(180deg,#142347,#101b36);
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 0 18px rgba(79,140,255,.45),
+    0 8px 24px rgba(0,0,0,.7);
+}
+
+.btn span{
+  color:var(--muted);
+  font-size:13px;
+  display:block;
+  margin-top:3px;
+}
+
+/* footer */
+
+.footer{
+  margin-top:26px;
+  font-size:13px;
+  color:#7f8fb3;
+  text-align:center;
+}
+
+@media (max-width:480px){
+  .card{
+    width:92%;
+    padding:32px 22px 26px;
+  }
+}
+
+</style>
 </head>
+
 <body>
 
-<h1>Jevgenia R.</h1>
+<div class="card">
 
-<p>QA / Automation / OCR localization testing</p>
+  <h1>Jevgenia R.</h1>
+  <div class="subtitle">QA • Automation • OCR validation</div>
 
-<h3>Projects</h3>
+  <div class="links">
+
+    <a class="btn" href="https://base.jevgenia.com">
+      PutThatBase
+      <span>Put. It.</span>
+    </a>
+
+    <a class="btn" href="https://ocr.jevgenia.com">
+      OCR Localization Checker
+      <span>Lazy Tester</span>
+    </a>
+
+     <a class="btn" href="https://ocr-testing.jevgenia.com">
+      AI OCR Models Testing
+      <span>me@jevgenia.com</span>
+    </a>
+
+    <a class="btn" href="mailto:me@jevgenia.com">
+      Email
+      <span>me@jevgenia.com</span>
+    </a>
+    
+
+  </div>
+
+  <div class="footer">
+    Estonia
+  </div>
+
+</div>
+
+</body>
+</html>
 
 <ul>
   <li><a href="https://lazytester.jevgenia.com">OCR Localization Checker</a></li>
