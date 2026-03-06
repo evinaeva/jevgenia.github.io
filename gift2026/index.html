@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gift Options for Vlad</title>
+  <meta name="description" content="Curated executive gift shortlist with rationale, pricing, and delivery considerations." />
+  <style>
+    :root {
+      --bg: #0a0b0d;
+      --panel: #121418;
+      --panel-soft: #171b21;
+      --text: #eceff4;
+      --muted: #a4adba;
+      --line: #2a3039;
+      --accent: #b09162;
+      --focus: #d0b084;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+      background: radial-gradient(circle at 30% -10%, #1d2128 0, transparent 45%), var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; }
+
+    .container {
+      width: min(1160px, calc(100% - 3rem));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 6rem 0 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      margin: 0;
+      letter-spacing: 0.01em;
+      line-height: 1.12;
+    }
+
+    .hero p {
+      margin: 1rem 0 0;
+      color: var(--muted);
+      max-width: 64ch;
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+    }
+
+    .summary {
+      margin: 2.4rem 0 3.6rem;
+      background: linear-gradient(160deg, #181a1f 0%, #111317 100%);
+      border: 1px solid #373028;
+      border-radius: 20px;
+      padding: 1.5rem 1.6rem;
+      box-shadow: var(--shadow);
+    }
+
+    .summary h2,
+    .options h2 { font-size: 0.92rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 0.7rem; }
+
+    .summary .choice {
+      display: block;
+      font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .summary p { margin: 0; color: #d3d8e2; }
+
+    .options { padding-bottom: 5rem; }
+
+    .option-card {
+      margin-top: 1.7rem;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-soft) 100%);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+    }
+
+    .option-card.recommended {
+      border-color: #4d3f2b;
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(176, 145, 98, 0.2);
+    }
+
+    .media { border-right: 1px solid var(--line); padding: 1.2rem; }
+
+    .main-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid #353c47;
+      cursor: pointer;
+      background: #0d1014;
+    }
+
+    .thumbs {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.2rem;
+    }
+
+    .thumb {
+      border: 1px solid #37404d;
+      border-radius: 10px;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      width: 82px;
+      height: 56px;
+      flex: 0 0 auto;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9px;
+      opacity: 0.8;
+    }
+
+    .thumb.active { border-color: var(--accent); }
+    .thumb.active img { opacity: 1; }
+
+    .content { padding: 1.3rem 1.4rem 1.5rem; }
+
+    .meta-row { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 0.55rem; }
+
+    .label {
+      border: 1px solid #36404f;
+      color: #d3d8e2;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.56rem;
+    }
+
+    .label.rank { border-color: #5a4730; color: #dcc5a0; }
+
+    h3 { margin: 0.3rem 0 0.65rem; font-size: 1.5rem; line-height: 1.25; }
+
+    .grid-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin: 0.85rem 0 1rem;
+    }
+
+    .meta-box {
+      border: 1px solid #313844;
+      border-radius: 12px;
+      padding: 0.6rem 0.7rem;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .meta-box strong { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.2rem; }
+
+    .external-link {
+      display: inline-block;
+      margin-bottom: 0.95rem;
+      text-decoration: none;
+      border: 1px solid #404959;
+      border-radius: 10px;
+      padding: 0.5rem 0.8rem;
+      font-weight: 500;
+      color: #edf2fa;
+      background: #1a1f27;
+    }
+
+    .external-link:hover,
+    .external-link:focus-visible { border-color: var(--accent); }
+
+    .content p { margin: 0 0 0.7rem; color: #d5dae3; }
+
+    .list-title { font-weight: 600; margin: 0.75rem 0 0.2rem; font-size: 0.95rem; color: #f2f4f8; }
+    ul { margin: 0; padding-left: 1.2rem; color: #d3d8e1; }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 1.5rem 0 2.6rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 3, 4, 0.9);
+      z-index: 20;
+      padding: 1.5rem;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-content {
+      position: relative;
+      width: min(1200px, 92vw);
+      max-height: 90vh;
+      border: 1px solid #4b5361;
+      border-radius: 14px;
+      background: #0f1217;
+      padding: 0.8rem;
+    }
+
+    .lightbox img {
+      width: 100%;
+      max-height: calc(90vh - 4rem);
+      object-fit: contain;
+      display: block;
+      border-radius: 10px;
+      background: #0a0d12;
+    }
+
+    .lightbox button {
+      position: absolute;
+      border: 1px solid #515b6a;
+      background: rgba(14, 18, 24, 0.9);
+      color: #f4f7fe;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .lightbox-close { top: 0.85rem; right: 0.85rem; }
+    .lightbox-prev, .lightbox-next { top: 50%; transform: translateY(-50%); }
+    .lightbox-prev { left: 0.85rem; }
+    .lightbox-next { right: 0.85rem; }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 960px) {
+      .option-card { grid-template-columns: 1fr; }
+      .media { border-right: none; border-bottom: 1px solid var(--line); }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(1160px, calc(100% - 1.4rem)); }
+      .hero { padding-top: 4.2rem; }
+      .grid-meta { grid-template-columns: 1fr; }
+      .content { padding: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <span class="eyebrow">Prepared as a decision aid</span>
+      <h1>Gift Options for Vlad</h1>
+      <p>A curated shortlist with rationale, pricing, and delivery considerations, focused on relevance, display value, and overall gift impact.</p>
+      <section class="summary" aria-label="Recommendation summary">
+        <h2>Recommendation summary</h2>
+        <span class="choice">Preferred option: Lewis Hamilton bodywork in acrylic, 2018 season</span>
+        <p>Best balance of personal relevance, display value, and gift impact.</p>
+      </section>
+    </div>
+  </header>
+
+  <main class="container options" aria-label="Gift options"></main>
+
+  <footer class="footer">
+    <div class="container">Curated shortlist intended for final executive selection.</div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Image viewer">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">×</button>
+      <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous image">←</button>
+      <img id="lightboxImage" src="" alt="" />
+      <button class="lightbox-next" id="lightboxNext" aria-label="Next image">→</button>
+    </div>
+  </div>
+
+  <script>
+    const gifts = [
+      {
+        title: "Airline Gift Card",
+        category: "Practical gift",
+        rankingLabel: "Most practical",
+        price: "Price: see product page",
+        delivery: "Delivery: see product page",
+        rationale: "He likes travelling.",
+        pros: ["Very likely to be used"],
+        cons: ["Feels ordinary", "Lacks emotional impact"],
+        link: null,
+        linkLabel: "No product link provided",
+        images: [
+          { src: "assets/gifts/airline-01.svg", alt: "Elegant airline gift card concept visual" },
+          { src: "assets/gifts/airline-02.svg", alt: "Travel voucher concept visual" }
+        ]
+      },
+      {
+        title: "Lewis Hamilton bodywork in acrylic",
+        category: "Emotional gift",
+        rankingLabel: "Best overall fit",
+        recommended: true,
+        price: "Price: see product page",
+        delivery: "5 working days",
+        rationale: "He is a Formula 1 fan and Lewis Hamilton is specifically his favorite driver. This is suitable for office interior display. It includes a real piece of bodywork with signature, making it tactile and collectible.",
+        pros: [
+          "Very personal and highly relevant",
+          "Strong display value for an office",
+          "Real race car bodywork fragment gives it collectible weight"
+        ],
+        cons: ["Uncertainty whether pre-2025 Hamilton memorabilia is especially valuable to him"],
+        link: "https://www.f1authentics.com/products/lewis-hamilton-2018-bodywork-in-acrylic-1?variant=53518457176445",
+        linkLabel: "Open preferred 2018 product page",
+        extraLinks: [
+          { href: "https://www.f1authentics.com/products/lewis-hamilton-2015-bodywork-in-acrylicc?variant=53518241333629", text: "2015 variant" },
+          { href: "https://www.f1authentics.com/products/lewis-hamilton-2016-bodywork-in-acrylic-2?variant=53518237335933", text: "2016 variant" },
+          { href: "https://www.f1authentics.com/products/lewis-hamilton-2014-bodywork-acrylic-1?variant=53518191985021", text: "2014 variant" },
+          { href: "https://www.drawonce.com/product/lewis5x", text: "Complementary framed print (delivery 5–7 working days)" }
+        ],
+        images: [
+          { src: "assets/gifts/hamilton-2018.svg", alt: "Lewis Hamilton 2018 bodywork in acrylic concept" },
+          { src: "assets/gifts/hamilton-2016.svg", alt: "Lewis Hamilton 2016 bodywork in acrylic concept" },
+          { src: "assets/gifts/hamilton-2015.svg", alt: "Lewis Hamilton 2015 bodywork in acrylic concept" },
+          { src: "assets/gifts/hamilton-print.svg", alt: "Complementary framed print concept" }
+        ]
+      },
+      {
+        title: "New York Rangers framed hockey puck shadowbox",
+        category: "Emotional / sports memorabilia",
+        rankingLabel: "Strong interior piece",
+        price: "Price: see product page",
+        delivery: "4–10 business days",
+        rationale: "He likes hockey and specifically New York Rangers. Henrik Lundqvist is particularly relevant because Vlad dreamed of becoming a goalie.",
+        pros: ["Strong office display value", "Personal sports relevance"],
+        cons: ["Uncertainty whether these exact players are meaningful to him"],
+        link: "https://shop.nhl.com/new-york-rangers/autographed-new-york-rangers-henrik-lundqvist-fanatics-authentic-framed-rangers-career-statistic-hockey-puck-shadowbox-with-hockey-puck/t-14269682+p-0467714187189+z-9-4024400432",
+        linkLabel: "Open Henrik Lundqvist version",
+        extraLinks: [
+          { href: "https://www.fanatics.com/nhl/new-york-rangers/chris-kreider-new-york-rangers-autographed-fanatics-authentic-framed-hockey-puck-shadowbox/o-1384+t-03601882+p-7955664547825+z-9-3711988090", text: "Chris Kreider version" }
+        ],
+        images: [
+          { src: "assets/gifts/rangers-lundqvist.svg", alt: "Henrik Lundqvist framed hockey puck shadowbox concept" },
+          { src: "assets/gifts/rangers-kreider.svg", alt: "Chris Kreider framed hockey puck shadowbox concept" }
+        ]
+      },
+      {
+        title: "Traintrackr NYC Subway Circuit Board 2.0",
+        category: "Design object / tech art",
+        rankingLabel: "NYC-linked option",
+        price: "Price: see product page",
+        delivery: "7–14 business days",
+        rationale: "He loved New York. This compact design object from MoMA Design Store is visually interesting and premium, with real-time train movement via WiFi and MTA API data.",
+        pros: [
+          "Distinctive and memorable",
+          "Good office/interior object",
+          "New York connection is strong",
+          "Around 200 EUR, so leaves room in budget"
+        ],
+        cons: ["Less personally targeted than the Lewis Hamilton option"],
+        link: "https://store.moma.org/en-ee/products/traintrackr-nyc-subway-circuit-board-2",
+        linkLabel: "Open product page",
+        images: [
+          { src: "assets/gifts/traintrackr-01.svg", alt: "Traintrackr NYC Subway Circuit Board overview" },
+          { src: "assets/gifts/traintrackr-02.svg", alt: "Traintrackr circuit board detail visual" }
+        ]
+      }
+    ];
+
+    const optionsRoot = document.querySelector('.options');
+    let activeGallery = null;
+    let activeIndex = 0;
+
+    function createOptionCard(item, cardIndex) {
+      const card = document.createElement('article');
+      card.className = `option-card${item.recommended ? ' recommended' : ''}`;
+      card.setAttribute('aria-label', item.title);
+
+      const media = document.createElement('div');
+      media.className = 'media';
+
+      const mainImage = document.createElement('img');
+      mainImage.className = 'main-image';
+      mainImage.src = item.images[0].src;
+      mainImage.alt = item.images[0].alt;
+      mainImage.dataset.card = cardIndex;
+      mainImage.dataset.index = 0;
+      mainImage.tabIndex = 0;
+      mainImage.addEventListener('click', () => openLightbox(cardIndex, Number(mainImage.dataset.index)));
+      mainImage.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(cardIndex, Number(mainImage.dataset.index));
+        }
+      });
+
+      const thumbs = document.createElement('div');
+      thumbs.className = 'thumbs';
+
+      item.images.forEach((image, imageIndex) => {
+        const thumb = document.createElement('button');
+        thumb.className = `thumb${imageIndex === 0 ? ' active' : ''}`;
+        thumb.type = 'button';
+        thumb.setAttribute('aria-label', `Show image ${imageIndex + 1} for ${item.title}`);
+        thumb.innerHTML = `<img src="${image.src}" alt="${image.alt}">`;
+        thumb.addEventListener('click', () => {
+          mainImage.src = image.src;
+          mainImage.alt = image.alt;
+          mainImage.dataset.index = imageIndex;
+          thumbs.querySelectorAll('.thumb').forEach((t, i) => t.classList.toggle('active', i === imageIndex));
+        });
+        thumbs.appendChild(thumb);
+      });
+
+      media.append(mainImage, thumbs);
+
+      const content = document.createElement('div');
+      content.className = 'content';
+
+      const metaRow = document.createElement('div');
+      metaRow.className = 'meta-row';
+      metaRow.innerHTML = `<span class="label">${item.category}</span><span class="label rank">${item.rankingLabel}</span>`;
+
+      const title = document.createElement('h3');
+      title.textContent = item.title;
+
+      const metaGrid = document.createElement('div');
+      metaGrid.className = 'grid-meta';
+      metaGrid.innerHTML = `<div class="meta-box"><strong>Price</strong>${item.price.replace('Price: ', '')}</div><div class="meta-box"><strong>Delivery</strong>${item.delivery.replace('Delivery: ', '')}</div>`;
+
+      const linkBlock = document.createElement('div');
+      if (item.link) {
+        linkBlock.innerHTML = `<a class="external-link" target="_blank" rel="noopener noreferrer" href="${item.link}">${item.linkLabel}</a>`;
+      } else {
+        linkBlock.innerHTML = `<span class="external-link" role="note" aria-label="No product link available">No product link provided</span>`;
+      }
+
+      const rationale = document.createElement('p');
+      rationale.innerHTML = `<strong>Why it fits:</strong> ${item.rationale}`;
+
+      const prosTitle = document.createElement('p');
+      prosTitle.className = 'list-title';
+      prosTitle.textContent = 'Pros';
+      const pros = document.createElement('ul');
+      item.pros.forEach((point) => {
+        const li = document.createElement('li');
+        li.textContent = point;
+        pros.appendChild(li);
+      });
+
+      const consTitle = document.createElement('p');
+      consTitle.className = 'list-title';
+      consTitle.textContent = 'Cons';
+      const cons = document.createElement('ul');
+      item.cons.forEach((point) => {
+        const li = document.createElement('li');
+        li.textContent = point;
+        cons.appendChild(li);
+      });
+
+      content.append(metaRow, title, metaGrid, linkBlock, rationale, prosTitle, pros, consTitle, cons);
+
+      if (item.extraLinks && item.extraLinks.length) {
+        const extra = document.createElement('p');
+        extra.className = 'list-title';
+        extra.textContent = 'Additional links';
+        const list = document.createElement('ul');
+        item.extraLinks.forEach((entry) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<a target="_blank" rel="noopener noreferrer" href="${entry.href}">${entry.text}</a>`;
+          list.appendChild(li);
+        });
+        content.append(extra, list);
+      }
+
+      card.append(media, content);
+      return card;
+    }
+
+    gifts.forEach((gift, i) => optionsRoot.appendChild(createOptionCard(gift, i)));
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightboxImage');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxPrev = document.getElementById('lightboxPrev');
+    const lightboxNext = document.getElementById('lightboxNext');
+
+    function renderLightboxImage() {
+      const image = gifts[activeGallery].images[activeIndex];
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt;
+    }
+
+    function openLightbox(galleryIndex, imageIndex) {
+      activeGallery = galleryIndex;
+      activeIndex = imageIndex;
+      renderLightboxImage();
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      lightboxClose.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function showNext(step) {
+      if (activeGallery === null) return;
+      const total = gifts[activeGallery].images.length;
+      activeIndex = (activeIndex + step + total) % total;
+      renderLightboxImage();
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxPrev.addEventListener('click', () => showNext(-1));
+    lightboxNext.addEventListener('click', () => showNext(1));
+
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!lightbox.classList.contains('open')) return;
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') showNext(-1);
+      if (event.key === 'ArrowRight') showNext(1);
+    });
+  </script>
+</body>
+</html>
