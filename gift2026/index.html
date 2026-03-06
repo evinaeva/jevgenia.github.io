@@ -7,14 +7,14 @@
   <meta name="description" content="Curated executive gift shortlist with rationale, pricing, and delivery considerations." />
   <style>
     :root {
-      --bg: #0a0b0d;
-      --panel: #121418;
-      --panel-soft: #171b21;
+      --bg: #071124;
+      --panel: #0d1a35;
+      --panel-soft: #13264a;
       --text: #eceff4;
       --muted: #a4adba;
-      --line: #2a3039;
-      --accent: #b09162;
-      --focus: #d0b084;
+      --line: #29456f;
+      --accent: #4f86d9;
+      --focus: #79a7ef;
       --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     }
 
@@ -23,7 +23,7 @@
     body {
       margin: 0;
       font-family: "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
-      background: radial-gradient(circle at 30% -10%, #1d2128 0, transparent 45%), var(--bg);
+      background: radial-gradient(circle at 30% -10%, #193562 0, transparent 45%), var(--bg);
       color: var(--text);
       line-height: 1.55;
     }
@@ -68,8 +68,8 @@
 
     .summary {
       margin: 2.4rem 0 3.6rem;
-      background: linear-gradient(160deg, #181a1f 0%, #111317 100%);
-      border: 1px solid #373028;
+      background: linear-gradient(160deg, #163766 0%, #0e1f3d 100%);
+      border: 1px solid #35598a;
       border-radius: 20px;
       padding: 1.5rem 1.6rem;
       box-shadow: var(--shadow);
@@ -97,24 +97,26 @@
       overflow: hidden;
       box-shadow: var(--shadow);
       display: grid;
-      grid-template-columns: 1.15fr 1fr;
+      grid-template-columns: minmax(320px, 0.95fr) 1fr;
+      align-items: start;
     }
 
     .option-card.recommended {
-      border-color: #4d3f2b;
-      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(176, 145, 98, 0.2);
+      border-color: #4c73ad;
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(79, 134, 217, 0.25), 0 0 28px rgba(79, 134, 217, 0.2);
     }
 
-    .media { border-right: 1px solid var(--line); padding: 1.2rem; }
+    .media { border-right: 1px solid var(--line); padding: 1.2rem; max-width: 560px; width: 100%; }
 
     .main-image {
       width: 100%;
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
+      aspect-ratio: var(--image-ratio, 3 / 4);
+      object-fit: contain;
       border-radius: 14px;
-      border: 1px solid #353c47;
+      border: 1px solid #436392;
       cursor: pointer;
-      background: #0d1014;
+      background: #091226;
+      box-shadow: inset 0 0 0 1px rgba(121, 167, 239, 0.22), 0 0 28px rgba(79, 134, 217, 0.16);
     }
 
     .thumbs {
@@ -126,13 +128,13 @@
     }
 
     .thumb {
-      border: 1px solid #37404d;
+      border: 1px solid #385c8f;
       border-radius: 10px;
       padding: 0;
       background: transparent;
       cursor: pointer;
-      width: 82px;
-      height: 56px;
+      width: 64px;
+      height: 82px;
       flex: 0 0 auto;
     }
 
@@ -142,26 +144,14 @@
       object-fit: cover;
       border-radius: 9px;
       opacity: 0.8;
+      background: #091226;
     }
 
-    .thumb.active { border-color: var(--accent); }
+    .thumb.active { border-color: var(--accent); box-shadow: 0 0 12px rgba(79, 134, 217, 0.35); }
     .thumb.active img { opacity: 1; }
 
     .content { padding: 1.3rem 1.4rem 1.5rem; }
 
-    .meta-row { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 0.55rem; }
-
-    .label {
-      border: 1px solid #36404f;
-      color: #d3d8e2;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0.22rem 0.56rem;
-    }
-
-    .label.rank { border-color: #5a4730; color: #dcc5a0; }
 
     h3 { margin: 0.3rem 0 0.65rem; font-size: 1.5rem; line-height: 1.25; }
 
@@ -173,10 +163,10 @@
     }
 
     .meta-box {
-      border: 1px solid #313844;
+      border: 1px solid #35527f;
       border-radius: 12px;
       padding: 0.6rem 0.7rem;
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .meta-box strong { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.2rem; }
@@ -185,16 +175,16 @@
       display: inline-block;
       margin-bottom: 0.95rem;
       text-decoration: none;
-      border: 1px solid #404959;
+      border: 1px solid #4a6998;
       border-radius: 10px;
       padding: 0.5rem 0.8rem;
       font-weight: 500;
       color: #edf2fa;
-      background: #1a1f27;
+      background: #17305a;
     }
 
     .external-link:hover,
-    .external-link:focus-visible { border-color: var(--accent); }
+    .external-link:focus-visible { border-color: var(--accent); box-shadow: 0 0 16px rgba(79, 134, 217, 0.35); }
 
     .content p { margin: 0 0 0.7rem; color: #d5dae3; }
 
@@ -265,7 +255,8 @@
 
     @media (max-width: 960px) {
       .option-card { grid-template-columns: 1fr; }
-      .media { border-right: none; border-bottom: 1px solid var(--line); }
+      .media { border-right: none; border-bottom: 1px solid var(--line); max-width: 100%; }
+      .main-image { max-height: 62vh; }
     }
 
     @media (max-width: 640px) {
@@ -393,6 +384,55 @@
     let activeGallery = null;
     let activeIndex = 0;
 
+    const fallbackByExtension = {
+      svg: ['png', 'webp', 'gif'],
+      png: ['webp', 'gif', 'svg'],
+      webp: ['png', 'gif', 'svg'],
+      gif: ['webp', 'png', 'svg'],
+      jpg: ['webp', 'png', 'gif', 'svg'],
+      jpeg: ['webp', 'png', 'gif', 'svg']
+    };
+
+    const getFallbackSources = (sourcePath) => {
+      const match = sourcePath.match(/^(.*)\.([a-z0-9]+)(\?.*)?$/i);
+      if (!match) return [];
+
+      const [, basePath, extRaw, query = ''] = match;
+      const ext = extRaw.toLowerCase();
+      const fallbackExtensions = fallbackByExtension[ext] || ['png', 'webp', 'gif', 'svg'];
+
+      return fallbackExtensions
+        .filter((candidateExt, index, arr) => arr.indexOf(candidateExt) === index && candidateExt !== ext)
+        .map((candidateExt) => `${basePath}.${candidateExt}${query}`);
+    };
+
+    const setImageSource = (imgEl, source) => {
+      imgEl.dataset.source = source.src;
+      imgEl.dataset.fallbackSources = JSON.stringify(getFallbackSources(source.src));
+      imgEl.src = source.src;
+      imgEl.alt = source.alt;
+      imgEl.dataset.fallbackIndex = '0';
+    };
+
+    const attachImageFallback = (imgEl) => {
+      imgEl.addEventListener('error', () => {
+        const fallbackSources = JSON.parse(imgEl.dataset.fallbackSources || '[]');
+        const fallbackIndex = Number(imgEl.dataset.fallbackIndex || 0);
+
+        if (fallbackIndex >= fallbackSources.length) return;
+
+        const nextSource = fallbackSources[fallbackIndex];
+        imgEl.dataset.fallbackIndex = String(fallbackIndex + 1);
+        imgEl.src = nextSource;
+      });
+    };
+
+    const updateImageRatio = (imgEl) => {
+      const ratio = imgEl.naturalWidth / imgEl.naturalHeight;
+      if (!ratio || Number.isNaN(ratio)) return;
+      imgEl.style.setProperty('--image-ratio', ratio > 1.08 ? '16 / 10' : '3 / 4');
+    };
+
     function createOptionCard(item, cardIndex) {
       const card = document.createElement('article');
       card.className = `option-card${item.recommended ? ' recommended' : ''}`;
@@ -403,8 +443,9 @@
 
       const mainImage = document.createElement('img');
       mainImage.className = 'main-image';
-      mainImage.src = item.images[0].src;
-      mainImage.alt = item.images[0].alt;
+      setImageSource(mainImage, item.images[0]);
+      attachImageFallback(mainImage);
+      mainImage.addEventListener('load', () => updateImageRatio(mainImage));
       mainImage.dataset.card = cardIndex;
       mainImage.dataset.index = 0;
       mainImage.tabIndex = 0;
@@ -425,9 +466,11 @@
         thumb.type = 'button';
         thumb.setAttribute('aria-label', `Show image ${imageIndex + 1} for ${item.title}`);
         thumb.innerHTML = `<img src="${image.src}" alt="${image.alt}">`;
+        const thumbImage = thumb.querySelector('img');
+        setImageSource(thumbImage, image);
+        attachImageFallback(thumbImage);
         thumb.addEventListener('click', () => {
-          mainImage.src = image.src;
-          mainImage.alt = image.alt;
+          setImageSource(mainImage, image);
           mainImage.dataset.index = imageIndex;
           thumbs.querySelectorAll('.thumb').forEach((t, i) => t.classList.toggle('active', i === imageIndex));
         });
@@ -438,10 +481,6 @@
 
       const content = document.createElement('div');
       content.className = 'content';
-
-      const metaRow = document.createElement('div');
-      metaRow.className = 'meta-row';
-      metaRow.innerHTML = `<span class="label">${item.category}</span><span class="label rank">${item.rankingLabel}</span>`;
 
       const title = document.createElement('h3');
       title.textContent = item.title;
@@ -460,27 +499,7 @@
       const rationale = document.createElement('p');
       rationale.innerHTML = `<strong>Описание:</strong> ${item.rationale}`;
 
-      const prosTitle = document.createElement('p');
-      prosTitle.className = 'list-title';
-      prosTitle.textContent = 'Плюсы';
-      const pros = document.createElement('ul');
-      item.pros.forEach((point) => {
-        const li = document.createElement('li');
-        li.textContent = point;
-        pros.appendChild(li);
-      });
-
-      const consTitle = document.createElement('p');
-      consTitle.className = 'list-title';
-      consTitle.textContent = 'Минусы';
-      const cons = document.createElement('ul');
-      item.cons.forEach((point) => {
-        const li = document.createElement('li');
-        li.textContent = point;
-        cons.appendChild(li);
-      });
-
-      content.append(metaRow, title, metaGrid, linkBlock, rationale, prosTitle, pros, consTitle, cons);
+      content.append(title, metaGrid, linkBlock, rationale);
 
       if (item.extraLinks && item.extraLinks.length) {
         const extra = document.createElement('p');
@@ -507,10 +526,11 @@
     const lightboxPrev = document.getElementById('lightboxPrev');
     const lightboxNext = document.getElementById('lightboxNext');
 
+    attachImageFallback(lightboxImage);
+
     function renderLightboxImage() {
       const image = gifts[activeGallery].images[activeIndex];
-      lightboxImage.src = image.src;
-      lightboxImage.alt = image.alt;
+      setImageSource(lightboxImage, image);
     }
 
     function openLightbox(galleryIndex, imageIndex) {
