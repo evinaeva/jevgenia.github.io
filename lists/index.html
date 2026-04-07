@@ -175,9 +175,9 @@ pre#log-out {
   <div class="block" style="padding:0">
     <div class="drop-zone" id="drop-zone">
       <div class="icon">📦</div>
-      <p>Перетащи ZIP с базами</p>
-      <p style="font-size:13px">или нажми для выбора файла</p>
-      <input type="file" id="file-input" accept=".zip" hidden>
+      <p>Перетащи архив с базами</p>
+      <p style="font-size:13px">ZIP, RAR, TGZ — или нажми для выбора файла</p>
+      <input type="file" id="file-input" accept=".zip,.rar,.tgz,.tar.gz" hidden>
     </div>
   </div>
   <p class="file-chosen hidden" id="file-chosen"></p>
@@ -241,7 +241,7 @@ function setFile(f) {
 
   // Fetch signed upload URL immediately after file selection
   const sessionId = uuid();
-  fetch(`${CF_BASE_URL}/get-upload-url?session_id=${encodeURIComponent(sessionId)}`)
+  fetch(`${CF_BASE_URL}/get-upload-url?session_id=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(f.name)}`)
     .then(r => {
       if (!r.ok) return r.text().then(t => { throw new Error(`CF error ${r.status}: ${t.slice(0,200)}`); });
       return r.json();
@@ -325,7 +325,7 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 async function startImport() {
   if (!uploadUrl || !gcsPath || !selectedFile) return;
 
-  const logId = gcsPath.split('/')[1]; // extract session_id from uploads/{id}/input.zip
+  const logId = gcsPath.split('/')[1]; // extract session_id from uploads/{id}/filename
 
   const btn = document.getElementById('import-btn');
   btn.disabled = true;
@@ -338,18 +338,18 @@ async function startImport() {
   lastLogCount = 0;
 
   try {
-    // 1. Upload ZIP to GCS via signed URL
-    addLocalLog(`Загружаю ZIP в GCS… (${(selectedFile.size/1024/1024).toFixed(1)} MB)`);
+    // 1. Upload archive to GCS via signed URL
+    addLocalLog(`Загружаю архив в GCS… (${(selectedFile.size/1024/1024).toFixed(1)} MB)`);
     const uploadResp = await fetch(uploadUrl, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/zip' },
+      headers: { 'Content-Type': 'application/octet-stream' },
       body: selectedFile,
     });
     if (!uploadResp.ok) {
       const txt = await uploadResp.text();
       throw new Error(`GCS upload failed ${uploadResp.status}: ${txt.slice(0, 200)}`);
     }
-    addLocalLog('ZIP загружен в GCS.');
+    addLocalLog('Архив загружен в GCS.');
 
     // 2. Trigger import via Cloud Function
     addLocalLog('Запускаю GitHub Actions workflow…');
