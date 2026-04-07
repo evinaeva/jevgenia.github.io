@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scripts</title>
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0b1222">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#04070c;
+  --card:#0c1424;
+  --text:#e6ecff;
+  --muted:#9aa7c7;
+  --accent:#4f8cff;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(1200px 600px at 70% -10%, #0b1f4a 0%, transparent 60%),
+    radial-gradient(800px 500px at -20% 120%, #091a3a 0%, transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family: Manrope, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+}
+
+.page{
+  max-width:960px;
+  margin:0 auto;
+  padding:34px 20px 44px;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 16px;
+  border-radius:10px;
+  text-decoration:none;
+  color:var(--text);
+  background:linear-gradient(180deg,#111c34,#0d162b);
+  border:1px solid #1d2a4d;
+  transition:.18s ease;
+  text-align:center;
+  font-size:15px;
+}
+
+.btn:hover{
+  border-color:#3f6fff;
+  background:linear-gradient(180deg,#142347,#101b36);
+  transform:translateY(-2px);
+  box-shadow:
+    0 0 18px rgba(79,140,255,.45),
+    0 8px 24px rgba(0,0,0,.7);
+}
+
+.top-nav{
+  margin-bottom:26px;
+}
+
+.title{
+  margin:0;
+  text-align:center;
+  font-size:clamp(32px,5vw,44px);
+  letter-spacing:.5px;
+}
+
+.subtitle{
+  margin:10px 0 28px;
+  text-align:center;
+  color:var(--muted);
+  font-size:15px;
+}
+
+.registry{
+  border:1px solid #1d2a4d;
+  border-radius:16px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#0e172b 0%, #0b1222 100%);
+  box-shadow:
+    0 0 55px rgba(40,90,200,.22),
+    0 0 10px rgba(80,140,255,.2) inset,
+    0 20px 50px rgba(0,0,0,.65);
+}
+
+.grid,
+.row{
+  display:grid;
+  grid-template-columns:1.3fr 2fr .9fr 1.2fr;
+  gap:16px;
+  align-items:start;
+}
+
+.grid{
+  padding:16px 20px;
+  color:var(--muted);
+  font-size:13px;
+  border-bottom:1px solid #1d2a4d;
+}
+
+.row{
+  padding:18px 20px;
+  border-bottom:1px solid #1d2a4d;
+}
+
+.row:last-child{ border-bottom:none; }
+
+.mobile-label{
+  display:none;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:4px;
+}
+
+.script-name{
+  font-weight:600;
+  color:var(--text);
+}
+
+.desc{
+  color:#cfd8f5;
+  line-height:1.45;
+}
+
+.author{
+  color:#d5ddf8;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.actions .btn{
+  padding:10px 14px;
+  font-size:14px;
+}
+
+@media (max-width:860px){
+  .grid{ display:none; }
+
+  .row{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .mobile-label{
+    display:block;
+  }
+
+  .actions{
+    margin-top:2px;
+  }
+}
+</style>
+</head>
+<body>
+  <main class="page">
+    <div class="top-nav">
+      <a class="btn" href="/">&lt;- Home</a>
+    </div>
+
+    <h1 class="title">Scripts</h1>
+    <p class="subtitle">Internal scripts registry</p>
+
+    <section class="registry" aria-label="Scripts registry">
+      <div class="grid" aria-hidden="true">
+        <div>Script name</div>
+        <div>Description</div>
+        <div>Author</div>
+        <div>Actions</div>
+      </div>
+
+      <article class="row">
+        <div>
+          <div class="mobile-label">Script name</div>
+          <div class="script-name">OCR Batch Checker</div>
+        </div>
+        <div>
+          <div class="mobile-label">Description</div>
+          <div class="desc">Validates OCR result batches before internal review.</div>
+        </div>
+        <div>
+          <div class="mobile-label">Author</div>
+          <div class="author">Jevgenia</div>
+        </div>
+        <div>
+          <div class="mobile-label">Actions</div>
+          <div class="actions">
+            <a class="btn" href="/downloads/ocr-batch-checker.zip">Download</a>
+            <a class="btn" href="/instructions/ocr-batch-checker.html">Instruction</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="row">
+        <div>
+          <div class="mobile-label">Script name</div>
+          <div class="script-name">File Renamer</div>
+        </div>
+        <div>
+          <div class="mobile-label">Description</div>
+          <div class="desc">Renames files according to internal naming conventions.</div>
+        </div>
+        <div>
+          <div class="mobile-label">Author</div>
+          <div class="author">Anna</div>
+        </div>
+        <div>
+          <div class="mobile-label">Actions</div>
+          <div class="actions">
+            <a class="btn" href="/downloads/file-renamer.zip">Download</a>
+            <a class="btn" href="/instructions/file-renamer.html">Instruction</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="row">
+        <div>
+          <div class="mobile-label">Script name</div>
+          <div class="script-name">Report Exporter</div>
+        </div>
+        <div>
+          <div class="mobile-label">Description</div>
+          <div class="desc">Builds export-ready internal reports.</div>
+        </div>
+        <div>
+          <div class="mobile-label">Author</div>
+          <div class="author">Maksim</div>
+        </div>
+        <div>
+          <div class="mobile-label">Actions</div>
+          <div class="actions">
+            <a class="btn" href="/downloads/report-exporter.zip">Download</a>
+            <a class="btn" href="/instructions/report-exporter.html">Instruction</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="row">
+        <div>
+          <div class="mobile-label">Script name</div>
+          <div class="script-name">CSV Cleaner</div>
+        </div>
+        <div>
+          <div class="mobile-label">Description</div>
+          <div class="desc">Normalizes CSV input files.</div>
+        </div>
+        <div>
+          <div class="mobile-label">Author</div>
+          <div class="author">Daria</div>
+        </div>
+        <div>
+          <div class="mobile-label">Actions</div>
+          <div class="actions">
+            <a class="btn" href="/downloads/csv-cleaner.zip">Download</a>
+            <a class="btn" href="/instructions/csv-cleaner.html">Instruction</a>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
