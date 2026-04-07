@@ -1,9 +1,9 @@
 """
 Cloud Function: ES Lists API proxy
 Endpoints:
-  GET  /get-upload-url?session_id=XXX  → {url, gcs_path}
-  POST /trigger-import                  → {ok: true}
-    body: {"session_id": "XXX", "gcs_path": "uploads/XXX/input.zip"}
+  GET  /get-upload-url?session_id=XXX[&filename=BNG-30632.zip]  → {url, gcs_path}
+  POST /trigger-import                                           → {ok: true}
+    body: {"session_id": "XXX", "gcs_path": "uploads/XXX/BNG-30632.zip"}
 
 Required env vars:
   GITHUB_TOKEN    Fine-grained PAT with actions:write
@@ -30,8 +30,10 @@ ALLOWED_ORIGINS = {
     "http://localhost",
 }
 
-_SESSION_RE = re.compile(r'^[0-9a-f\-]{8,64}$')
-_GCSPATH_RE = re.compile(r'^uploads/[0-9a-f\-]{8,64}/input\.zip$')
+_SESSION_RE  = re.compile(r'^[0-9a-f\-]{8,64}$')
+_GCSPATH_RE  = re.compile(r'^uploads/[0-9a-f\-]{8,64}/[A-Za-z0-9._\-]{1,128}$')
+_FILENAME_RE = re.compile(r'^[A-Za-z0-9._\-]{1,128}$')
+_ALLOWED_EXTS = {'.zip', '.rar', '.tgz', '.tar.gz'}
 
 
 def _cors(origin: str) -> dict:
@@ -42,6 +44,18 @@ def _cors(origin: str) -> dict:
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Max-Age": "3600",
     }
+
+
+def _safe_filename(raw: str) -> str | None:
+    """Sanitize upload filename; return None if invalid or unsupported extension."""
+    name = os.path.basename(raw).strip()
+    if not name or not _FILENAME_RE.match(name):
+        return None
+    name_lower = name.lower()
+    for ext in _ALLOWED_EXTS:
+        if name_lower.endswith(ext):
+            return name
+    return None
 
 
 @functions_framework.http
@@ -67,19 +81,22 @@ def _get_upload_url(request, hdrs):
     if not _SESSION_RE.match(session_id):
         return (jsonify({"error": "invalid session_id"}), 400, hdrs)
 
+    raw_filename = request.args.get("filename", "").strip()
+    filename = _safe_filename(raw_filename) or "input.zip"
+
     creds = service_account.Credentials.from_service_account_info(
         GCS_SA_KEY,
         scopes=["https://www.googleapis.com/auth/cloud-platform"],
     )
     client = storage.Client(credentials=creds, project=GCS_SA_KEY["project_id"])
-    blob_path = f"uploads/{session_id}/input.zip"
+    blob_path = f"uploads/{session_id}/{filename}"
     blob = client.bucket(GCS_BUCKET).blob(blob_path)
 
     signed_url = blob.generate_signed_url(
         version="v4",
         expiration=datetime.timedelta(hours=1),
         method="PUT",
-        content_type="application/zip",
+        content_type="application/octet-stream",
     )
     return (jsonify({"url": signed_url, "gcs_path": blob_path}), 200, hdrs)
 
