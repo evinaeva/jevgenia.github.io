@@ -1,0 +1,32 @@
+name: ES Lists Import
+
+on:
+  workflow_dispatch:
+    inputs:
+      gcs_path:
+        description: 'Path of uploaded ZIP in GCS'
+        required: true
+      log_id:
+        description: 'Unique session ID for log tracking'
+        required: true
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests google-cloud-storage
+      - name: Run import worker
+        env:
+          ES_API_KEY:      ${{ secrets.ES_API_KEY }}
+          ES_BASE_URL:     ${{ secrets.ES_BASE_URL }}
+          GCS_BUCKET:      ${{ secrets.GCS_BUCKET }}
+          GCS_SA_KEY_JSON: ${{ secrets.GCS_SA_KEY_JSON }}
+          LOG_ID:          ${{ github.event.inputs.log_id }}
+          GCS_UPLOAD_PATH: ${{ github.event.inputs.gcs_path }}
+        run: python lists/es_import_worker.py
