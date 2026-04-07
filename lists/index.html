@@ -37,7 +37,7 @@ body {
 }
 
 .page {
-  max-width: 680px;
+  max-width: 740px;
   margin: 0 auto;
   padding: 32px 20px 60px;
 }
@@ -84,8 +84,8 @@ body {
   box-shadow: 0 0 24px rgba(79,140,255,.55), 0 8px 24px rgba(0,0,0,.7);
 }
 
-.top-nav  { margin-bottom: 28px; }
-.title    { margin: 0; text-align: center; font-size: clamp(28px,5vw,40px); letter-spacing: .5px; }
+.top-nav { margin-bottom: 28px; }
+.title   { margin: 0; text-align: center; font-size: clamp(28px,5vw,40px); letter-spacing: .5px; }
 .subtitle { margin: 8px 0 28px; text-align: center; color: var(--muted); font-size: 15px; }
 
 .block {
@@ -97,51 +97,7 @@ body {
   box-shadow: 0 0 40px rgba(40,90,200,.15), 0 0 8px rgba(80,140,255,.15) inset;
 }
 
-details.block summary {
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--muted);
-  user-select: none;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-details.block summary::before { content: '⚙'; }
-details.block[open] summary   { margin-bottom: 14px; }
-
-.field-row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.field-row label { font-size: 13px; color: var(--muted); }
-.field-row input {
-  background: #060d1c;
-  border: 1px solid #1d2a4d;
-  border-radius: 8px;
-  padding: 9px 12px;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 13px;
-  outline: none;
-  transition: border-color .15s;
-  width: 100%;
-}
-.field-row input:focus { border-color: var(--accent); }
-.save-row { display: flex; gap: 10px; align-items: center; }
-.save-ok  { font-size: 13px; color: var(--ok); }
-
-.url-status {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 10px;
-  min-height: 18px;
-}
-.url-status.ready { color: var(--ok); }
-.url-status.error { color: var(--err); }
-
+/* drop zone */
 .drop-zone {
   border: 2px dashed #1d2a4d;
   border-radius: 12px;
@@ -155,10 +111,11 @@ details.block[open] summary   { margin-bottom: 14px; }
   border-color: var(--accent);
   background: rgba(79,140,255,.06);
 }
-.drop-zone p    { margin: 6px 0; }
+.drop-zone p { margin: 6px 0; }
 .drop-zone .icon { font-size: 32px; margin-bottom: 6px; }
 .file-chosen { font-size: 13px; color: var(--accent); margin-top: 10px; }
 
+/* log */
 .log-wrap {
   background: #02050c;
   border: 1px solid #1d2a4d;
@@ -192,6 +149,7 @@ pre#log-out {
 .log-error { color: var(--err); }
 .log-warn  { color: var(--warn); }
 
+/* result */
 .result {
   border-radius: 12px;
   padding: 16px 20px;
@@ -199,7 +157,7 @@ pre#log-out {
   font-weight: 600;
   text-align: center;
 }
-.result.ok      { background: rgba(76,255,145,.08);  border: 1px solid rgba(76,255,145,.25);  color: var(--ok); }
+.result.ok      { background: rgba(76,255,145,.08); border: 1px solid rgba(76,255,145,.25); color: var(--ok); }
 .result.partial { background: rgba(255,209,102,.08); border: 1px solid rgba(255,209,102,.25); color: var(--warn); }
 .result.err     { background: rgba(255,107,107,.08); border: 1px solid rgba(255,107,107,.25); color: var(--err); }
 
@@ -213,22 +171,6 @@ pre#log-out {
   <h1 class="title">ES Lists Import</h1>
   <p class="subtitle">Загрузка баз в ExpertSender</p>
 
-  <!-- Settings (token only) -->
-  <details class="block" id="settings-details">
-    <summary>Настройки</summary>
-    <div class="field-row">
-      <label>GitHub Token <span style="opacity:.6">(fine-grained PAT, Actions: write)</span></label>
-      <input type="password" id="gh-token" autocomplete="off" placeholder="github_pat_…">
-    </div>
-    <div class="save-row">
-      <button class="btn" onclick="saveToken()">Сохранить</button>
-      <span class="save-ok hidden" id="save-ok">✓ Сохранено</span>
-    </div>
-  </details>
-
-  <!-- Upload URL status -->
-  <p class="url-status" id="url-status"></p>
-
   <!-- Drop zone -->
   <div class="block" style="padding:0">
     <div class="drop-zone" id="drop-zone">
@@ -240,10 +182,12 @@ pre#log-out {
   </div>
   <p class="file-chosen hidden" id="file-chosen"></p>
 
+  <!-- Import button -->
   <button class="btn btn-primary" id="import-btn" disabled onclick="startImport()">
     Загрузить базы
   </button>
 
+  <!-- Log -->
   <div class="log-wrap hidden" id="log-wrap" style="margin-top:16px">
     <div class="log-header">
       <span>Логи</span>
@@ -252,109 +196,24 @@ pre#log-out {
     <pre id="log-out"></pre>
   </div>
 
+  <!-- Result -->
   <div class="hidden" id="result-area" style="margin-top:12px"></div>
 
 </main>
 
 <script>
-const REPO       = 'evinaeva/jevgenia.github.io';
-const GCS_BUCKET = 'es-lists-jevgenia';
-const BRANCH     = 'main';
+// ── Config (no secrets) ────────────────────────────────────────────
+const CF_BASE_URL = 'https://europe-west1-gen-lang-client-0771120655.cloudfunctions.net/es-api';
+const GCS_BUCKET  = 'es-lists-jevgenia';
+const REPO        = 'evinaeva/jevgenia.github.io';
+const BRANCH      = 'main';
 
-// ── Token ──────────────────────────────────────────────────────────────────
-function getToken() { return localStorage.getItem('gh-token') || ''; }
-
-function saveToken() {
-  localStorage.setItem('gh-token', document.getElementById('gh-token').value.trim());
-  const ok = document.getElementById('save-ok');
-  ok.classList.remove('hidden');
-  setTimeout(() => ok.classList.add('hidden'), 2000);
-  initSession();
-}
-
-// ── Session (presigned upload URL) ────────────────────────────────────────
-let sessionId    = null;
-let uploadUrl    = null;
-let gcsUploadPath = null;
-let urlPollTimer = null;
-
-function uuid() {
-  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
-}
-
-function setUrlStatus(msg, cls = '') {
-  const el = document.getElementById('url-status');
-  el.textContent = msg;
-  el.className = 'url-status' + (cls ? ' ' + cls : '');
-}
-
-async function initSession() {
-  const token = getToken();
-  if (!token) return;
-
-  uploadUrl    = null;
-  gcsUploadPath = null;
-  sessionId    = uuid();
-  clearInterval(urlPollTimer);
-
-  setUrlStatus('Подготовка к загрузке…');
-
-  // Trigger es-get-upload-url workflow
-  try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${REPO}/actions/workflows/es-get-upload-url.yml/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github+json',
-          'X-GitHub-Api-Version': '2022-11-28',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ref: BRANCH, inputs: { session_id: sessionId } }),
-      }
-    );
-    if (!resp.ok) {
-      const txt = await resp.text();
-      setUrlStatus('Ошибка токена: ' + resp.status, 'error');
-      return;
-    }
-  } catch (e) {
-    setUrlStatus('Ошибка сети: ' + e.message, 'error');
-    return;
-  }
-
-  // Poll for the presigned URL
-  let attempts = 0;
-  urlPollTimer = setInterval(async () => {
-    attempts++;
-    if (attempts > 40) {
-      clearInterval(urlPollTimer);
-      setUrlStatus('Timeout: не удалось получить URL загрузки. Попробуй обновить страницу.', 'error');
-      return;
-    }
-    try {
-      const r = await fetch(
-        `https://storage.googleapis.com/${GCS_BUCKET}/sessions/${sessionId}/upload-url.json?_=${Date.now()}`
-      );
-      if (!r.ok) return;
-      const data = await r.json();
-      if (data.url) {
-        clearInterval(urlPollTimer);
-        uploadUrl     = data.url;
-        gcsUploadPath = data.gcs_path;
-        setUrlStatus('✓ Готово к загрузке', 'ready');
-        checkReady();
-      }
-    } catch (_) {}
-  }, 3000);
-}
-
-// ── File selection ──────────────────────────────────────────────────────────
+// ── File selection ──────────────────────────────────────────────
 let selectedFile = null;
+let uploadUrl    = null;
+let gcsPath      = null;
 
-const dropZone = document.getElementById('drop-zone');
+const dropZone  = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
 dropZone.addEventListener('click', () => fileInput.click());
@@ -363,7 +222,8 @@ dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
 dropZone.addEventListener('drop', e => {
   e.preventDefault();
   dropZone.classList.remove('over');
-  if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  const f = e.dataTransfer.files[0];
+  if (f) setFile(f);
 });
 fileInput.addEventListener('change', () => {
   if (fileInput.files[0]) setFile(fileInput.files[0]);
@@ -371,47 +231,75 @@ fileInput.addEventListener('change', () => {
 
 function setFile(f) {
   selectedFile = f;
+  uploadUrl    = null;
+  gcsPath      = null;
+
   const info = document.getElementById('file-chosen');
-  info.textContent = `✓ ${f.name}  (${(f.size / 1024 / 1024).toFixed(1)} MB)`;
+  info.textContent = `✓ ${f.name}  (${(f.size / 1024 / 1024).toFixed(1)} MB)  — получаю URL для загрузки…`;
   info.classList.remove('hidden');
-  checkReady();
+  document.getElementById('import-btn').disabled = true;
+
+  // Fetch signed upload URL immediately after file selection
+  const sessionId = uuid();
+  fetch(`${CF_BASE_URL}/get-upload-url?session_id=${encodeURIComponent(sessionId)}`)
+    .then(r => {
+      if (!r.ok) return r.text().then(t => { throw new Error(`CF error ${r.status}: ${t.slice(0,200)}`); });
+      return r.json();
+    })
+    .then(data => {
+      uploadUrl = data.url;
+      gcsPath   = data.gcs_path;
+      info.textContent = `✓ ${f.name}  (${(f.size / 1024 / 1024).toFixed(1)} MB)`;
+      document.getElementById('import-btn').disabled = false;
+    })
+    .catch(err => {
+      info.textContent = `✗ Не удалось получить URL: ${err.message}`;
+      info.style.color = 'var(--err)';
+    });
 }
 
-function checkReady() {
-  document.getElementById('import-btn').disabled = !(selectedFile && uploadUrl);
+// ── UUID ────────────────────────────────────────────────────────────────────────
+function uuid() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
 }
 
-// ── GCS upload via presigned URL ────────────────────────────────────────────
-async function gcsUpload(file, signedUrl) {
-  const resp = await fetch(signedUrl, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/octet-stream' },
-    body: file,
-  });
-  if (!resp.ok) {
-    const txt = await resp.text();
-    throw new Error(`GCS upload failed ${resp.status}: ${txt.slice(0, 200)}`);
+// ── Log helpers ─────────────────────────────────────────────────────────
+let lastLogCount = 0;
+
+function addLocalLog(msg, level = 'info') {
+  const el = document.getElementById('log-out');
+  const span = document.createElement('span');
+  span.className = `log-${level}`;
+  const t = new Date().toTimeString().slice(0, 8);
+  span.textContent = `${t}  ${msg}\n`;
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+function renderLogs(logs) {
+  const el = document.getElementById('log-out');
+  const newEntries = logs.slice(lastLogCount);
+  for (const e of newEntries) {
+    const span = document.createElement('span');
+    span.className = `log-${e.level}`;
+    span.textContent = `${e.t}  ${e.msg}\n`;
+    el.appendChild(span);
+  }
+  if (newEntries.length > 0) {
+    el.scrollTop = el.scrollHeight;
+    lastLogCount = logs.length;
   }
 }
 
-// ── GitHub Actions: trigger import ─────────────────────────────────────────
-async function triggerImport(logId) {
-  const resp = await fetch(
-    `https://api.github.com/repos/${REPO}/actions/workflows/es-import.yml/dispatches`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${getToken()}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ref: BRANCH, inputs: { gcs_path: gcsUploadPath, log_id: logId } }),
-    }
-  );
-  if (!resp.ok) {
-    const txt = await resp.text();
-    throw new Error(`Trigger failed ${resp.status}: ${txt.slice(0, 200)}`);
+async function pollLogs(logId) {
+  const url = `https://storage.googleapis.com/${GCS_BUCKET}/logs/${logId}.json`;
+  try {
+    const r = await fetch(url + '?_=' + Date.now());
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_) {
+    return null;
   }
 }
 
@@ -420,46 +308,25 @@ async function findRunUrl() {
     await sleep(3000);
     try {
       const r = await fetch(
-        `https://api.github.com/repos/${REPO}/actions/runs?event=workflow_dispatch&branch=${BRANCH}&per_page=3`
+        `https://api.github.com/repos/${REPO}/actions/runs?event=workflow_dispatch&branch=${BRANCH}&per_page=5`
       );
       const data = await r.json();
-      if (data.workflow_runs?.length > 0) return data.workflow_runs[0].html_url;
+      if (data.workflow_runs && data.workflow_runs.length > 0) {
+        return data.workflow_runs[0].html_url;
+      }
     } catch (_) {}
   }
   return null;
 }
 
-// ── Log polling ─────────────────────────────────────────────────────────────
-let lastLogCount = 0;
-
-async function pollLogs(logId) {
-  try {
-    const r = await fetch(
-      `https://storage.googleapis.com/${GCS_BUCKET}/logs/${logId}.json?_=${Date.now()}`
-    );
-    if (!r.ok) return null;
-    return await r.json();
-  } catch (_) { return null; }
-}
-
-function renderLogs(logs) {
-  const el = document.getElementById('log-out');
-  for (const e of logs.slice(lastLogCount)) {
-    const span = document.createElement('span');
-    span.className = `log-${e.level}`;
-    span.textContent = `${e.t}  ${e.msg}\n`;
-    el.appendChild(span);
-  }
-  if (logs.length > lastLogCount) {
-    el.scrollTop = el.scrollHeight;
-    lastLogCount = logs.length;
-  }
-}
-
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── Main import flow ────────────────────────────────────────────────────────
+// ── Main flow ─────────────────────────────────────────────────────────────────
 async function startImport() {
+  if (!uploadUrl || !gcsPath || !selectedFile) return;
+
+  const logId = gcsPath.split('/')[1]; // extract session_id from uploads/{id}/input.zip
+
   const btn = document.getElementById('import-btn');
   btn.disabled = true;
   btn.textContent = 'Загружаю…';
@@ -467,28 +334,37 @@ async function startImport() {
   document.getElementById('result-area').classList.add('hidden');
   document.getElementById('log-wrap').classList.remove('hidden');
   document.getElementById('log-out').textContent = '';
+  document.getElementById('run-link').innerHTML = '';
   lastLogCount = 0;
 
-  const logId = sessionId;
-
-  const addLocalLog = (msg, level = 'info') => {
-    const el   = document.getElementById('log-out');
-    const span = document.createElement('span');
-    span.className  = `log-${level}`;
-    span.textContent = `${new Date().toTimeString().slice(0, 8)}  ${msg}\n`;
-    el.appendChild(span);
-    el.scrollTop = el.scrollHeight;
-  };
-
   try {
+    // 1. Upload ZIP to GCS via signed URL
     addLocalLog(`Загружаю ZIP в GCS… (${(selectedFile.size/1024/1024).toFixed(1)} MB)`);
-    await gcsUpload(selectedFile, uploadUrl);
-    addLocalLog('ZIP загружен.');
+    const uploadResp = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/zip' },
+      body: selectedFile,
+    });
+    if (!uploadResp.ok) {
+      const txt = await uploadResp.text();
+      throw new Error(`GCS upload failed ${uploadResp.status}: ${txt.slice(0, 200)}`);
+    }
+    addLocalLog('ZIP загружен в GCS.');
 
+    // 2. Trigger import via Cloud Function
     addLocalLog('Запускаю GitHub Actions workflow…');
-    await triggerImport(logId);
-    addLocalLog('Workflow запущен. Ожидаю логи…');
+    const trigResp = await fetch(`${CF_BASE_URL}/trigger-import`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: logId, gcs_path: gcsPath }),
+    });
+    if (!trigResp.ok) {
+      const txt = await trigResp.text();
+      throw new Error(`Trigger failed ${trigResp.status}: ${txt.slice(0, 200)}`);
+    }
+    addLocalLog('Workflow запущен. Ожидаю обработку…');
 
+    // 3. Find run URL (background)
     findRunUrl().then(url => {
       if (url) {
         document.getElementById('run-link').innerHTML =
@@ -496,31 +372,30 @@ async function startImport() {
       }
     });
 
+    // 4. Poll GCS logs
     btn.textContent = 'Выполняется…';
-    let done = false, noData = 0;
+    let done = false;
+    let noDataCount = 0;
 
     while (!done) {
       await sleep(3500);
       const data = await pollLogs(logId);
       if (!data) {
-        if (++noData > 40) {
-          addLocalLog('Нет ответа более 2 минут. Проверь GitHub Actions.', 'warn');
+        noDataCount++;
+        if (noDataCount > 40) {
+          addLocalLog('Нет ответа от воркера более 2 минут. Проверь GitHub Actions.', 'warn');
           break;
         }
         continue;
       }
-      noData = 0;
+      noDataCount = 0;
       renderLogs(data.logs || []);
-      if (['done', 'error', 'partial'].includes(data.status)) {
+      if (data.status === 'done' || data.status === 'error' || data.status === 'partial') {
         done = true;
         showResult(data.status);
-        // Prepare next session so next upload is ready
-        sessionId = uuid();
-        uploadUrl = null;
-        gcsUploadPath = null;
-        initSession();
       }
     }
+
   } catch (err) {
     addLocalLog(`Ошибка: ${err.message}`, 'error');
     showResult('error');
@@ -528,7 +403,11 @@ async function startImport() {
 
   btn.disabled = false;
   btn.textContent = 'Загрузить базы';
-  checkReady();
+  // Reset so user can upload again
+  uploadUrl = null;
+  gcsPath   = null;
+  selectedFile = null;
+  document.getElementById('file-chosen').classList.add('hidden');
 }
 
 function showResult(status) {
@@ -541,13 +420,6 @@ function showResult(status) {
   };
   const { cls, text } = map[status] || map.error;
   el.innerHTML = `<div class="result ${cls}">${text}</div>`;
-}
-
-// ── Init ────────────────────────────────────────────────────────────────────
-document.getElementById('gh-token').value = getToken();
-if (getToken()) {
-  document.getElementById('settings-details').open = false;
-  initSession();
 }
 </script>
 </body>

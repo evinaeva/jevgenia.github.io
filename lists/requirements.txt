@@ -1,0 +1,4 @@
+functions-framework==3.*
+google-cloud-storage>=2.10
+google-auth>=2.20
+requests>=2.31
