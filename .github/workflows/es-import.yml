@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       gcs_path:
-        description: 'Path of uploaded ZIP in GCS'
+        description: 'Path of uploaded archive in GCS'
         required: true
       log_id:
         description: 'Unique session ID for log tracking'
@@ -19,8 +19,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install requests google-cloud-storage
+      - name: Install system dependencies
+        run: sudo apt-get install -y unrar-free
+      - name: Install Python dependencies
+        run: pip install requests google-cloud-storage rarfile
       - name: Run import worker
         env:
           ES_API_KEY:      ${{ secrets.ES_API_KEY }}
