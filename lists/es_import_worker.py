@@ -43,14 +43,18 @@ gcs_client = gcs_lib.Client(credentials=_creds, project=_sa_info["project_id"])
 bucket_obj = gcs_client.bucket(GCS_BUCKET)
 
 log_entries: list = []
+_log_push_count = 0
 
 def _push_log(status: str):
-    blob = bucket_obj.blob(f"logs/{LOG_ID}.json")
+    global _log_push_count
+    # Write to a new sequential file each time to avoid needing storage.objects.delete
+    blob = bucket_obj.blob(f"logs/{LOG_ID}/{_log_push_count}.json")
     blob.upload_from_string(
         json.dumps({"status": status, "logs": log_entries}),
         content_type="application/json",
         timeout=15,
     )
+    _log_push_count += 1
 
 def log(msg: str, level: str = "info"):
     entry = {"t": time.strftime("%H:%M:%S"), "msg": msg, "level": level}
