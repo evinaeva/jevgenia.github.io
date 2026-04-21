@@ -84,6 +84,148 @@ body {
   box-shadow: 0 0 24px rgba(79,140,255,.55), 0 8px 24px rgba(0,0,0,.7);
 }
 
+/* Button row: big button + small red trash */
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  align-items: stretch;
+}
+.btn-row .btn-primary {
+  width: auto;
+  flex: 1;
+  margin-top: 0;
+}
+.btn-delete-mode {
+  background: linear-gradient(180deg, #7a1a1a, #601212) !important;
+  border-color: #c0392b !important;
+}
+.btn-delete-mode:hover:not(:disabled) {
+  background: linear-gradient(180deg, #8b2020, #701515) !important;
+  box-shadow: 0 0 24px rgba(192,57,43,.55), 0 8px 24px rgba(0,0,0,.7) !important;
+}
+.btn-trash {
+  width: 48px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #4a1010, #3b0808);
+  border: 1px solid #7a2020;
+  border-radius: 10px;
+  font-size: 18px;
+  padding: 0;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  transition: .18s ease;
+  line-height: 1;
+  font-family: inherit;
+}
+.btn-trash:hover {
+  background: linear-gradient(180deg, #6b1414, #4a0e0e);
+  border-color: #c0392b;
+  box-shadow: 0 0 18px rgba(192,57,43,.4);
+  transform: translateY(-2px);
+}
+.btn-trash.active {
+  background: linear-gradient(180deg, #1a1a2e, #111122);
+  border-color: #3f3f6f;
+  color: var(--muted);
+}
+.btn-trash.active:hover {
+  background: linear-gradient(180deg, #22224a, #191938);
+  border-color: #5f5faf;
+  box-shadow: none;
+}
+
+/* Delete input block */
+.delete-block {
+  padding: 20px 22px;
+}
+.delete-block label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+.delete-block input {
+  width: 100%;
+  background: #02050c;
+  border: 1px solid #1d2a4d;
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color .18s;
+  margin-bottom: 14px;
+}
+.delete-block input:last-child { margin-bottom: 0; }
+.delete-block input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Confirmation modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,7,.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  background: linear-gradient(180deg, #0e172b 0%, #0b1222 100%);
+  border: 1px solid #1d2a4d;
+  border-radius: 14px;
+  padding: 28px 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 60px rgba(0,0,0,.8);
+}
+.modal h3 { margin: 0 0 10px; font-size: 17px; }
+.modal p  { color: var(--muted); font-size: 14px; margin: 0 0 6px; line-height: 1.5; }
+.modal .range-label { color: var(--text); font-weight: 600; word-break: break-all; }
+.modal .confirm-num { color: var(--err); font-size: 22px; font-weight: 700; }
+.modal-input {
+  width: 100%;
+  background: #02050c;
+  border: 1px solid #1d2a4d;
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-size: 20px;
+  text-align: center;
+  font-family: inherit;
+  margin: 12px 0 16px;
+  transition: border-color .18s;
+}
+.modal-input:focus { outline: none; border-color: var(--err); }
+.modal-input.wrong {
+  border-color: var(--err);
+  animation: shake .25s;
+}
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions .btn { flex: 1; justify-content: center; }
+.btn-danger {
+  background: linear-gradient(180deg, #7a1a1a, #601212);
+  border-color: #c0392b;
+}
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(180deg, #8b2020, #701515);
+  box-shadow: 0 0 24px rgba(192,57,43,.55), 0 8px 24px rgba(0,0,0,.7);
+  transform: translateY(-2px);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-7px); }
+  75%       { transform: translateX(7px); }
+}
+
 .top-nav { margin-bottom: 28px; }
 .title   { margin: 0; text-align: center; font-size: clamp(28px,5vw,40px); letter-spacing: .5px; }
 .subtitle { margin: 8px 0 28px; text-align: center; color: var(--muted); font-size: 15px; }
@@ -171,8 +313,8 @@ pre#log-out {
   <h1 class="title">ES Lists Import</h1>
   <p class="subtitle">Загрузка баз в ExpertSender</p>
 
-  <!-- Drop zone -->
-  <div class="block" style="padding:0">
+  <!-- Upload block (drop zone) -->
+  <div class="block" style="padding:0" id="upload-block">
     <div class="drop-zone" id="drop-zone">
       <div class="icon">📦</div>
       <p>Перетащи архив с базами</p>
@@ -182,10 +324,27 @@ pre#log-out {
   </div>
   <p class="file-chosen hidden" id="file-chosen"></p>
 
-  <!-- Import button -->
-  <button class="btn btn-primary" id="import-btn" disabled onclick="startImport()">
-    Загрузить базы
-  </button>
+  <!-- Delete block (shown instead of drop zone in delete mode) -->
+  <div class="block hidden" id="delete-block">
+    <label for="delete-range">Диапазон листов для удаления</label>
+    <input type="text" id="delete-range"
+           placeholder="например: 4270-4284 или 4270, 4280-4284"
+           oninput="checkDeleteReady()" autocomplete="off" spellcheck="false">
+    <label for="delete-password">Пароль сервиса</label>
+    <input type="password" id="delete-password"
+           placeholder="••••••••" autocomplete="current-password"
+           oninput="checkDeleteReady()">
+  </div>
+
+  <!-- Main button row -->
+  <div class="btn-row">
+    <button class="btn btn-primary" id="import-btn" disabled onclick="handleMainBtn()">
+      Загрузить базы
+    </button>
+    <button class="btn btn-trash" id="trash-btn" onclick="toggleDeleteMode()" title="Удалить базы">
+      🗑
+    </button>
+  </div>
 
   <!-- Log -->
   <div class="log-wrap hidden" id="log-wrap" style="margin-top:16px">
@@ -199,16 +358,36 @@ pre#log-out {
   <!-- Result -->
   <div class="hidden" id="result-area" style="margin-top:12px"></div>
 
+  <!-- Delete confirmation modal -->
+  <div class="modal-overlay hidden" id="confirm-modal">
+    <div class="modal">
+      <h3>Подтвердите удаление</h3>
+      <p>Листы: <span class="range-label" id="confirm-range-text"></span></p>
+      <p style="margin-top:8px">
+        Введите число <span class="confirm-num">5</span> для подтверждения:
+      </p>
+      <input type="text" class="modal-input" id="confirm-number-input"
+             placeholder="5" maxlength="5" inputmode="numeric"
+             oninput="this.classList.remove('wrong')"
+             onkeydown="if(event.key==='Enter') confirmDelete()">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeDeleteConfirm()">Отмена</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Удалить базы</button>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
-// ── Config (no secrets) ────────────────────────────────────────────
-const CF_BASE_URL = 'https://europe-west1-gen-lang-client-0771120655.cloudfunctions.net/es-api';
-const GCS_BUCKET  = 'es-lists-jevgenia';
-const REPO        = 'evinaeva/jevgenia.github.io';
-const BRANCH      = 'main';
+// ── Config ──────────────────────────────────────────────────────────────────
+const CF_BASE_URL       = 'https://europe-west1-gen-lang-client-0771120655.cloudfunctions.net/es-api';
+const DELETE_WORKER_URL = 'wss://YOUR_DELETE_RUNNER_URL/ws/delete'; // TODO: update after deploy
+const GCS_BUCKET        = 'es-lists-jevgenia';
+const REPO              = 'evinaeva/jevgenia.github.io';
+const BRANCH            = 'main';
 
-// ── File selection ──────────────────────────────────────────────
+// ── File selection ──────────────────────────────────────────────────────────
 let selectedFile = null;
 let uploadUrl    = null;
 let gcsPath      = null;
@@ -239,7 +418,6 @@ function setFile(f) {
   info.classList.remove('hidden');
   document.getElementById('import-btn').disabled = true;
 
-  // Fetch signed upload URL immediately after file selection
   const sessionId = uuid();
   fetch(`${CF_BASE_URL}/get-upload-url?session_id=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(f.name)}`)
     .then(r => {
@@ -250,7 +428,7 @@ function setFile(f) {
       uploadUrl = data.url;
       gcsPath   = data.gcs_path;
       info.textContent = `✓ ${f.name}  (${(f.size / 1024 / 1024).toFixed(1)} MB)`;
-      document.getElementById('import-btn').disabled = false;
+      if (!deleteMode) document.getElementById('import-btn').disabled = false;
     })
     .catch(err => {
       info.textContent = `✗ Не удалось получить URL: ${err.message}`;
@@ -258,13 +436,13 @@ function setFile(f) {
     });
 }
 
-// ── UUID ────────────────────────────────────────────────────────────────────────
+// ── UUID ────────────────────────────────────────────────────────────────────
 function uuid() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
 }
 
-// ── Log helpers ─────────────────────────────────────────────────────────
+// ── Log helpers ─────────────────────────────────────────────────────────────
 let lastLogCount = 0;
 
 function addLocalLog(msg, level = 'info') {
@@ -292,8 +470,6 @@ function renderLogs(logs) {
   }
 }
 
-// Worker writes logs/{logId}/0.json, 1.json, 2.json… each containing full log state.
-// We track the last chunk fetched and try the next one each poll cycle.
 let lastChunk = -1;
 
 async function pollLogs(logId) {
@@ -328,11 +504,168 @@ async function findRunUrl() {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── Main flow ─────────────────────────────────────────────────────────────────
+// ── Delete mode ─────────────────────────────────────────────────────────────
+let deleteMode = false;
+
+function toggleDeleteMode() {
+  deleteMode = !deleteMode;
+  const uploadBlock = document.getElementById('upload-block');
+  const deleteBlock = document.getElementById('delete-block');
+  const fileChosen  = document.getElementById('file-chosen');
+  const mainBtn     = document.getElementById('import-btn');
+  const trashBtn    = document.getElementById('trash-btn');
+
+  if (deleteMode) {
+    uploadBlock.classList.add('hidden');
+    fileChosen.classList.add('hidden');
+    deleteBlock.classList.remove('hidden');
+    mainBtn.textContent = 'Удалить базы';
+    mainBtn.classList.add('btn-delete-mode');
+    mainBtn.disabled = true;
+    trashBtn.classList.add('active');
+    trashBtn.title = 'Отмена';
+    trashBtn.textContent = '✕';
+    const savedPw = sessionStorage.getItem('del_pw');
+    if (savedPw) document.getElementById('delete-password').value = savedPw;
+    checkDeleteReady();
+  } else {
+    uploadBlock.classList.remove('hidden');
+    deleteBlock.classList.add('hidden');
+    mainBtn.textContent = 'Загрузить базы';
+    mainBtn.classList.remove('btn-delete-mode');
+    mainBtn.disabled = !(uploadUrl && selectedFile);
+    trashBtn.classList.remove('active');
+    trashBtn.title = 'Удалить базы';
+    trashBtn.textContent = '🗑';
+  }
+}
+
+function isValidRange(s) {
+  if (!s) return false;
+  for (const chunk of s.split(',')) {
+    const c = chunk.trim();
+    if (!c) return false;
+    if (!/^\d+(-\d+)?$/.test(c)) return false;
+  }
+  return true;
+}
+
+function checkDeleteReady() {
+  if (!deleteMode) return;
+  const range = document.getElementById('delete-range').value.trim();
+  const pw    = document.getElementById('delete-password').value.trim();
+  document.getElementById('import-btn').disabled = !(isValidRange(range) && pw);
+}
+
+function handleMainBtn() {
+  if (deleteMode) {
+    showDeleteConfirm();
+  } else {
+    startImport();
+  }
+}
+
+// ── Delete confirmation modal ───────────────────────────────────────────────
+function showDeleteConfirm() {
+  const range = document.getElementById('delete-range').value.trim();
+  document.getElementById('confirm-range-text').textContent = range;
+  document.getElementById('confirm-number-input').value = '';
+  document.getElementById('confirm-number-input').classList.remove('wrong');
+  document.getElementById('confirm-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('confirm-number-input').focus(), 50);
+}
+
+function closeDeleteConfirm() {
+  document.getElementById('confirm-modal').classList.add('hidden');
+}
+
+function confirmDelete() {
+  const val = document.getElementById('confirm-number-input').value.trim();
+  if (val !== '5') {
+    const inp = document.getElementById('confirm-number-input');
+    inp.classList.remove('wrong');
+    void inp.offsetWidth; // reflow to re-trigger animation
+    inp.classList.add('wrong');
+    return;
+  }
+  closeDeleteConfirm();
+  startDelete();
+}
+
+document.getElementById('confirm-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteConfirm();
+});
+
+// ── Delete via WebSocket ────────────────────────────────────────────────────
+async function startDelete() {
+  const range    = document.getElementById('delete-range').value.trim();
+  const password = document.getElementById('delete-password').value.trim();
+  sessionStorage.setItem('del_pw', password);
+
+  const mainBtn = document.getElementById('import-btn');
+  mainBtn.disabled = true;
+  mainBtn.textContent = 'Удаляю…';
+
+  document.getElementById('result-area').classList.add('hidden');
+  document.getElementById('log-wrap').classList.remove('hidden');
+  document.getElementById('log-out').textContent = '';
+  document.getElementById('run-link').innerHTML = '';
+
+  addLocalLog('Подключаюсь к сервису удаления…');
+
+  try {
+    await new Promise((resolve, reject) => {
+      const ws = new WebSocket(DELETE_WORKER_URL);
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ id_range: range, password }));
+      };
+
+      ws.onmessage = event => {
+        let msg;
+        try { msg = JSON.parse(event.data); } catch { return; }
+        if (msg.type === 'ping') return;
+
+        const level = (msg.type === 'ok')        ? 'info'
+                    : (msg.type === 'error_line') ? 'error'
+                    : (msg.type === 'error')      ? 'error'
+                    : (msg.type === 'stderr')     ? 'warn'
+                    : 'info';
+
+        addLocalLog(`${msg.ts}  ${msg.text}`, level);
+
+        if (msg.type === 'done')   { showResult('done', '✓ Листы успешно удалены');     resolve(); }
+        if (msg.type === 'failed') { showResult('error', '✗ Завершено с ошибками — см. логи'); resolve(); }
+        if (msg.type === 'error' && msg.text.startsWith('❌')) { showResult('error'); resolve(); }
+      };
+
+      ws.onerror = () => {
+        reject(new Error('Ошибка соединения с сервисом удаления'));
+      };
+
+      ws.onclose = e => {
+        if (e.code === 4403) {
+          reject(new Error('Неверный пароль сервиса'));
+        } else {
+          resolve();
+        }
+      };
+    });
+  } catch (err) {
+    addLocalLog(`Ошибка: ${err.message}`, 'error');
+    showResult('error');
+  }
+
+  mainBtn.disabled = false;
+  mainBtn.textContent = 'Удалить базы';
+  checkDeleteReady();
+}
+
+// ── Import flow ─────────────────────────────────────────────────────────────
 async function startImport() {
   if (!uploadUrl || !gcsPath || !selectedFile) return;
 
-  const logId = gcsPath.split('/')[1]; // extract session_id from uploads/{id}/filename
+  const logId = gcsPath.split('/')[1];
 
   const btn = document.getElementById('import-btn');
   btn.disabled = true;
@@ -346,7 +679,6 @@ async function startImport() {
   lastChunk = -1;
 
   try {
-    // 1. Upload archive to GCS via signed URL
     addLocalLog(`Загружаю архив в GCS… (${(selectedFile.size/1024/1024).toFixed(1)} MB)`);
     const uploadResp = await fetch(uploadUrl, {
       method: 'PUT',
@@ -359,7 +691,6 @@ async function startImport() {
     }
     addLocalLog('Архив загружен в GCS.');
 
-    // 2. Trigger import via Cloud Function
     addLocalLog('Запускаю GitHub Actions workflow…');
     const trigResp = await fetch(`${CF_BASE_URL}/trigger-import`, {
       method: 'POST',
@@ -372,7 +703,6 @@ async function startImport() {
     }
     addLocalLog('Workflow запущен. Ожидаю обработку…');
 
-    // 3. Find run URL (background)
     findRunUrl().then(url => {
       if (url) {
         document.getElementById('run-link').innerHTML =
@@ -380,7 +710,6 @@ async function startImport() {
       }
     });
 
-    // 4. Poll GCS logs
     btn.textContent = 'Выполняется…';
     let done = false;
     let noDataCount = 0;
@@ -411,20 +740,19 @@ async function startImport() {
 
   btn.disabled = false;
   btn.textContent = 'Загрузить базы';
-  // Reset so user can upload again
   uploadUrl = null;
   gcsPath   = null;
   selectedFile = null;
   document.getElementById('file-chosen').classList.add('hidden');
 }
 
-function showResult(status) {
+function showResult(status, customText) {
   const el = document.getElementById('result-area');
   el.classList.remove('hidden');
   const map = {
-    done:    { cls: 'ok',      text: '✓ Все базы успешно загружены в ES' },
-    partial: { cls: 'partial', text: '⚠ Завершено с ошибками — см. логи' },
-    error:   { cls: 'err',     text: '✗ Ошибка — см. логи выше' },
+    done:    { cls: 'ok',      text: customText || '✓ Все базы успешно загружены в ES' },
+    partial: { cls: 'partial', text: customText || '⚠ Завершено с ошибками — см. логи' },
+    error:   { cls: 'err',     text: customText || '✗ Ошибка — см. логи выше' },
   };
   const { cls, text } = map[status] || map.error;
   el.innerHTML = `<div class="result ${cls}">${text}</div>`;
