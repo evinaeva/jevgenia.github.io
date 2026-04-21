@@ -158,9 +158,7 @@ body {
   font-size: 14px;
   font-family: inherit;
   transition: border-color .18s;
-  margin-bottom: 14px;
 }
-.delete-block input:last-child { margin-bottom: 0; }
 .delete-block input:focus {
   outline: none;
   border-color: var(--accent);
@@ -330,10 +328,6 @@ pre#log-out {
     <input type="text" id="delete-range"
            placeholder="например: 4270-4284 или 4270, 4280-4284"
            oninput="checkDeleteReady()" autocomplete="off" spellcheck="false">
-    <label for="delete-password">Пароль сервиса</label>
-    <input type="password" id="delete-password"
-           placeholder="••••••••" autocomplete="current-password"
-           oninput="checkDeleteReady()">
   </div>
 
   <!-- Main button row -->
@@ -525,8 +519,6 @@ function toggleDeleteMode() {
     trashBtn.classList.add('active');
     trashBtn.title = 'Отмена';
     trashBtn.textContent = '✕';
-    const savedPw = sessionStorage.getItem('del_pw');
-    if (savedPw) document.getElementById('delete-password').value = savedPw;
     checkDeleteReady();
   } else {
     uploadBlock.classList.remove('hidden');
@@ -553,8 +545,7 @@ function isValidRange(s) {
 function checkDeleteReady() {
   if (!deleteMode) return;
   const range = document.getElementById('delete-range').value.trim();
-  const pw    = document.getElementById('delete-password').value.trim();
-  document.getElementById('import-btn').disabled = !(isValidRange(range) && pw);
+  document.getElementById('import-btn').disabled = !isValidRange(range);
 }
 
 function handleMainBtn() {
@@ -584,7 +575,7 @@ function confirmDelete() {
   if (val !== '5') {
     const inp = document.getElementById('confirm-number-input');
     inp.classList.remove('wrong');
-    void inp.offsetWidth; // reflow to re-trigger animation
+    void inp.offsetWidth;
     inp.classList.add('wrong');
     return;
   }
@@ -598,9 +589,7 @@ document.getElementById('confirm-modal').addEventListener('click', function(e) {
 
 // ── Delete via WebSocket ────────────────────────────────────────────────────
 async function startDelete() {
-  const range    = document.getElementById('delete-range').value.trim();
-  const password = document.getElementById('delete-password').value.trim();
-  sessionStorage.setItem('del_pw', password);
+  const range = document.getElementById('delete-range').value.trim();
 
   const mainBtn = document.getElementById('import-btn');
   mainBtn.disabled = true;
@@ -618,7 +607,7 @@ async function startDelete() {
       const ws = new WebSocket(DELETE_WORKER_URL);
 
       ws.onopen = () => {
-        ws.send(JSON.stringify({ id_range: range, password }));
+        ws.send(JSON.stringify({ id_range: range }));
       };
 
       ws.onmessage = event => {
@@ -634,7 +623,7 @@ async function startDelete() {
 
         addLocalLog(`${msg.ts}  ${msg.text}`, level);
 
-        if (msg.type === 'done')   { showResult('done', '✓ Листы успешно удалены');     resolve(); }
+        if (msg.type === 'done')   { showResult('done', '✓ Листы успешно удалены'); resolve(); }
         if (msg.type === 'failed') { showResult('error', '✗ Завершено с ошибками — см. логи'); resolve(); }
         if (msg.type === 'error' && msg.text.startsWith('❌')) { showResult('error'); resolve(); }
       };
@@ -643,13 +632,7 @@ async function startDelete() {
         reject(new Error('Ошибка соединения с сервисом удаления'));
       };
 
-      ws.onclose = e => {
-        if (e.code === 4403) {
-          reject(new Error('Неверный пароль сервиса'));
-        } else {
-          resolve();
-        }
-      };
+      ws.onclose = e => { resolve(); };
     });
   } catch (err) {
     addLocalLog(`Ошибка: ${err.message}`, 'error');
