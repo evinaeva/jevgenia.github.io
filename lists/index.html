@@ -292,12 +292,19 @@ function renderLogs(logs) {
   }
 }
 
+// Worker writes logs/{logId}/0.json, 1.json, 2.json… each containing full log state.
+// We track the last chunk fetched and try the next one each poll cycle.
+let lastChunk = -1;
+
 async function pollLogs(logId) {
-  const url = `https://storage.googleapis.com/${GCS_BUCKET}/logs/${logId}.json`;
+  const nextChunk = lastChunk + 1;
+  const url = `https://storage.googleapis.com/${GCS_BUCKET}/logs/${logId}/${nextChunk}.json`;
   try {
     const r = await fetch(url + '?_=' + Date.now());
     if (!r.ok) return null;
-    return await r.json();
+    const data = await r.json();
+    lastChunk = nextChunk;
+    return data;
   } catch (_) {
     return null;
   }
@@ -336,6 +343,7 @@ async function startImport() {
   document.getElementById('log-out').textContent = '';
   document.getElementById('run-link').innerHTML = '';
   lastLogCount = 0;
+  lastChunk = -1;
 
   try {
     // 1. Upload archive to GCS via signed URL
