@@ -30,11 +30,13 @@ if _arc_basename.lower().endswith('.tar.gz'):
 else:
     ARCHIVE_NAME = os.path.splitext(_arc_basename)[0]
 
-# ES API supported language codes (as of docs)
+# ES API supported language codes (documented + confirmed via UI)
 SUPPORTED_LANGS = {
     "en-US", "pl-PL", "ru-RU", "zh-Hans", "pt-BR", "es-ES", "it-IT", "fr-FR", "de-DE", "cs-CZ",
     "nl-NL", "hu-HU", "ro-RO", "sk-SK", "lt-LT", "lv-LV", "et-EE", "hr-HR", "uk-UA", "sl-SI",
     "bg-BG", "el-GR", "sr-Latn", "ja-JP",
+    # Additional langs confirmed present in ES UI:
+    "da-DK", "fi-FI", "sv-SE", "mk-MK", "ko-KR", "nb-NO",
 }
 
 # File lang codes that don't match ES codes directly → mapped to closest supported
@@ -43,6 +45,7 @@ LANG_REMAP = {
     "zh-TW": "zh-Hans",  # Traditional → closest available
     "sr-RS": "sr-Latn",  # Serbian (Cyrillic region code → Latin script in ES)
     "pt-PT": "pt-BR",    # European Portuguese → Brazilian (closest available)
+    "no-NO": "nb-NO",    # Norwegian → Bokmål
 }
 
 # --- GCS client ---
