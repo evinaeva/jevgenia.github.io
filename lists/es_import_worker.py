@@ -106,7 +106,7 @@ def extract_csvs(data: bytes, filename: str) -> dict:
 
     if name_lower.endswith(".tar.gz") or name_lower.endswith(".tgz"):
         with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tf:
-            for member in tf.getmembers():
+            for member in tf.getmembers():\
                 if member.isfile() and _is_valid_csv(member.name):
                     f = tf.extractfile(member)
                     if f:
@@ -179,9 +179,9 @@ def trigger_es_import(list_id: int, list_name: str, file_url: str) -> int:
       <SubscriberList>{list_id}</SubscriberList>
     </Target>
     <ImportSetup>
-      <Mode>AddNew</Mode>
+      <Mode>AddAndIgnore</Mode>
       <Delimiter>,</Delimiter>
-      <Encoding>UTF-8</Encoding>
+      <Encoding>utf-8</Encoding>
       <AllowImportingUnsubscribedEmail>false</AllowImportingUnsubscribedEmail>
       <AllowImportingRemovedByUiEmail>false</AllowImportingRemovedByUiEmail>
       <CheckAllListsForUnsubscribes>true</CheckAllListsForUnsubscribes>
