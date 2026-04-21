@@ -106,7 +106,7 @@ def extract_csvs(data: bytes, filename: str) -> dict:
 
     if name_lower.endswith(".tar.gz") or name_lower.endswith(".tgz"):
         with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tf:
-            for member in tf.getmembers():\
+            for member in tf.getmembers():
                 if member.isfile() and _is_valid_csv(member.name):
                     f = tf.extractfile(member)
                     if f:
@@ -166,10 +166,10 @@ def create_es_list(name: str, lang: str) -> int:
 def trigger_es_import(list_id: int, list_name: str, file_url: str) -> int:
     mapping = """      <Mapping>
         <Column><Number>0</Number><Field>Email</Field></Column>
-        <Column><Number>1</Number><Field>username</Field></Column>
+        <Column><Number>1</Number><Property>18</Property></Column>
         <Column><Number>2</Number><Field>Firstname</Field></Column>
-        <Column><Number>3</Number><Field>favmodel_username</Field></Column>
-        <Column><Number>4</Number><Field>favmodel_displayname</Field></Column>
+        <Column><Number>3</Number><Property>24</Property></Column>
+        <Column><Number>4</Number><Property>25</Property></Column>
       </Mapping>"""
     xml = _xml(f"""    <Source>
       <Url><![CDATA[{file_url}]]></Url>
