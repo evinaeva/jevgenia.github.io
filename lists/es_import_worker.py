@@ -30,10 +30,19 @@ if _arc_basename.lower().endswith('.tar.gz'):
 else:
     ARCHIVE_NAME = os.path.splitext(_arc_basename)[0]
 
+# ES API supported language codes (as of docs)
 SUPPORTED_LANGS = {
-    "en-US","pl-PL","ru-RU","zh-Hans","pt-BR","es-ES","it-IT","fr-FR","de-DE","cs-CZ",
-    "nl-NL","hu-HU","ro-RO","sk-SK","lt-LT","lv-LV","et-EE","hr-HR","uk-UA","sl-SI",
-    "bg-BG","el-GR","sr-Latn","ja-JP"
+    "en-US", "pl-PL", "ru-RU", "zh-Hans", "pt-BR", "es-ES", "it-IT", "fr-FR", "de-DE", "cs-CZ",
+    "nl-NL", "hu-HU", "ro-RO", "sk-SK", "lt-LT", "lv-LV", "et-EE", "hr-HR", "uk-UA", "sl-SI",
+    "bg-BG", "el-GR", "sr-Latn", "ja-JP",
+}
+
+# File lang codes that don't match ES codes directly → mapped to closest supported
+LANG_REMAP = {
+    "zh-CN": "zh-Hans",  # Simplified Chinese
+    "zh-TW": "zh-Hans",  # Traditional → closest available
+    "sr-RS": "sr-Latn",  # Serbian (Cyrillic region code → Latin script in ES)
+    "pt-PT": "pt-BR",    # European Portuguese → Brazilian (closest available)
 }
 
 # --- GCS client ---
@@ -78,6 +87,8 @@ def lang_from_filename(fn: str) -> str:
         cand = f"{m.group(1)}-{m.group(2)}"
         if cand in SUPPORTED_LANGS:
             return cand
+        if cand in LANG_REMAP:
+            return LANG_REMAP[cand]
         if m.group(1) == "en":
             return "en-US"
     return "en-US"
