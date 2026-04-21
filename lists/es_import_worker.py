@@ -153,7 +153,7 @@ def create_es_list(name: str, lang: str) -> int:
     xml = _xml(f"""    <GeneralSettings>
       <Name><![CDATA[{name}]]></Name>
       <Language>{lang}</Language>
-      <OptInMode>OptIn</OptInMode>
+      <OptInMode>SingleOptIn</OptInMode>
     </GeneralSettings>""")
     r = _post_es("Lists", xml)
     if r.status_code >= 300:
